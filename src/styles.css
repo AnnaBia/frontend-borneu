@@ -1,1 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+  overflow: hidden;
+}
+
+po-container {
+  --padding: var(--spacing-sm);
+}
+
+po-widget {
+  --padding-body: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
+}
+
+po-page-content {
+  --padding-content: var(--spacing-sm) var(--spacing-xs);
+}
