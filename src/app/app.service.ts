@@ -1,23 +1,34 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AppService {
-  private apiUrl = 'http://127.0.0.1:5000';
+  private readonly API = 'http://127.0.0.1:5000';
 
   constructor(private http: HttpClient) { }
 
-  getData(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/dados`);
+  getClima(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/clima/extract`);
   }
 
-  getPrevisao(): Observable<any[]> {
-    const params = new HttpParams()
-      .set('format', 'full')
-      .set('combined', 'true');
+  getDesmatamento(): Observable<any> {
+    return this.http.get<any>(`${this.API}/desmatamento`);
+  }
 
-    return this.http.get<any[]>(`${this.apiUrl}/previsao`, { params });
+  getNdvi(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/ndvi`);
+  }
+
+  getPrevisaoClima(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/previsao/clima`);
+  }
+
+  getPrevisaoDesmatamento(): Observable<any> {
+    return this.http.get<any>(`${this.API}/previsao/area_desmatada`);
+  }
+
+  getPrevisaoNdvi(): Observable<any> {
+    return this.http.get<any>(`${this.API}/previsao/ndvi`);
   }
 }
-

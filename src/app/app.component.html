@@ -1,52 +1,52 @@
 <po-header [p-actions-tools]="headerActions"></po-header>
 <po-page-default>
   <div class="po-row" style="margin-top: 56px; row-gap: 1rem;">
-    <div class="po-row po-lg-9" style="row-gap: 1rem;">
-      <po-container class="po-lg-12">
-        <div class="po-row" style="row-gap: 1rem;">
-          <p class="po-font-subtitle">Desmatamento em Bornéu</p>
-          <p class="po-font-text">
-            A <span class="po-font-text-bold">Ilha de Bornéu</span>, lar da última grande floresta tropical da Ásia,
-            enfrenta uma das maiores taxas de
-            desmatamento do mundo. Mineração, agricultura e corte de madeira são os principais responsáveis, e empresas
-            operam frequentemente com pouca supervisão. A destruição das florestas ameaça espécies emblemáticas, como
-            orangotangos, macacos-narigudos, leopardos-nebulosos e os menores rinocerontes do planeta.
-          </p>
-        </div>
-      </po-container>
-
-      <div class="po-lg-12">
-        <po-widget>
-          <po-chart p-title="NDVI em Bornéu" [p-categories]="chartAreaCategories" [p-options]="chartAreaOptions"
-            [p-series]="chartAreaSeries">
-          </po-chart>
-          <div class="po-row po-pt-2" style="gap: 1rem; justify-content: center;">
-            <po-radio-group class="po-lg-6" name="periodo" [(ngModel)]="periodoSelecionado"
-              (ngModelChange)="onToggleAno($event)" [p-columns]="2" [p-options]="opcoesPeriodo">
-            </po-radio-group>
-          </div>
-        </po-widget>
+    <po-container class="po-lg-12">
+      <div class="po-row" style="row-gap: 1rem;">
+        <p class="po-font-subtitle">Desmatamento em Bornéu</p>
+        <p class="po-font-text">
+          A <span class="po-font-text-bold">Ilha de Bornéu</span>, lar da última grande floresta tropical da Ásia,
+          enfrenta uma das maiores taxas de desmatamento do mundo. A mineração, a agricultura e o corte de madeira são
+          os
+          principais responsáveis, com empresas muitas vezes operando sob pouca supervisão. Essa destruição ameaça
+          espécies emblemáticas como os <span class="po-font-text-bold">orangotangos</span>,
+          <span class="po-font-text-bold">macacos-narigudos</span>,
+          <span class="po-font-text-bold">leopardos-nebulosos</span> e os menores <span
+            class="po-font-text-bold">rinocerontes</span> do planeta.
+        </p>
       </div>
+    </po-container>
+
+    <div class="po-row po-pt-1" style="justify-content: end;">
+      <po-radio-group class="po-lg-6" name="periodo" [(ngModel)]="periodoSelecionado"
+        (ngModelChange)="onTogglePeriodo($event)" [p-columns]="2" [p-options]="opcoesPeriodo">
+      </po-radio-group>
     </div>
 
-    <div class="po-row po-lg-3" style="row-gap: 1rem;">
-      <div class="po-lg-12 po-md-6">
-        <po-image p-alt="Imagem Ilha de Bornéu" [p-height]="300" [p-priority]="true"
-          [p-src]="temaDark ? './assets/images/ilha-borneu-perda-arborea-dark.png' : './assets/images/ilha-borneu-perda-arborea.png'">
-        </po-image>
-      </div>
+    <div class="po-row" style="row-gap: 1rem;">
+      <po-container class="po-lg-12">
+        <po-helper class="po-pb-1 po-pl-2" style="justify-content:left;" [p-helper]="helperNdvi">
+        </po-helper>
+        <po-chart p-title="Índice de Vegetação (NDVI)" [p-categories]="chartNdviCategories"
+          [p-options]="chartNdviOptions" [p-series]="chartNdviSeries">
+        </po-chart>
+      </po-container>
 
-      <div class="po-lg-12 po-md-6">
-        <po-container>
-          <div style="display: flex; flex-direction: column; row-gap: 1rem;">
-            <p class="po-font-text-bold">NDVI - Índice de vegetação que varia de -1 a 1</p>
-            <po-info p-label="≈ 0" p-value="Áreas sem vegetação"></po-info>
-            <po-info p-label="0.2 – 0.4" p-value="Vegetação escassa"></po-info>
-            <po-info p-label="0.4 – 0.6" p-value="Vegetação moderada"></po-info>
-            <po-info p-label="> 0.6" p-value="Vegetação densa"></po-info>
-          </div>
-        </po-container>
-      </div>
+      <po-container class="po-lg-12">
+        <po-helper class="po-pb-1 po-pl-2" style="justify-content: left;" [p-helper]="helperClima">
+        </po-helper>
+        <po-chart p-title="Clima – Temperatura e Precipitação" [p-categories]="chartClimaCategories"
+          [p-series]="chartClimaSeries" [p-options]="chartClimaOptions">
+        </po-chart>
+      </po-container>
+
+      <po-container class="po-lg-12">
+        <po-helper class="po-pb-1 po-pl-2" style="justify-content: left;" [p-helper]="helperDesmatamento">
+        </po-helper>
+        <po-chart p-title="Desmatamento Anual" [p-categories]="chartDesmatamentoCategories"
+          [p-series]="chartDesmatamentoSeries" [p-options]="chartDesmatamentoOptions">
+        </po-chart>
+      </po-container>
     </div>
   </div>
 </po-page-default>
