@@ -24,29 +24,54 @@
     </div>
 
     <div class="po-row" style="row-gap: 1rem;">
-      <po-container class="po-lg-12">
-        <po-helper class="po-pb-1 po-pl-2" style="justify-content:left;" [p-helper]="helperNdvi">
-        </po-helper>
-        <po-chart p-title="Índice de Vegetação (NDVI)" [p-categories]="chartNdviCategories"
-          [p-options]="chartNdviOptions" [p-series]="chartNdviSeries">
-        </po-chart>
-      </po-container>
 
-      <po-container class="po-lg-12">
-        <po-helper class="po-pb-1 po-pl-2" style="justify-content: left;" [p-helper]="helperClima">
-        </po-helper>
-        <po-chart p-title="Clima – Temperatura e Precipitação" [p-categories]="chartClimaCategories"
-          [p-series]="chartClimaSeries" [p-options]="chartClimaOptions">
-        </po-chart>
-      </po-container>
+      <div #ndviEl style="position: relative; width: 100%;">
+        @if(!ndviInView || ndviLoading) {
+        <po-container [p-height]="500">
+          <po-loading-overlay></po-loading-overlay>
+        </po-container>
+        } @else {
+        <po-container class="po-lg-12" [p-height]="500">
+          <po-helper class="po-pb-1 po-pl-2" style="justify-content:left;" [p-helper]="helperNdvi">
+          </po-helper>
+          <po-chart p-title="Índice de Vegetação (NDVI)" [p-categories]="chartNdviCategories"
+            [p-options]="chartNdviOptions" [p-series]="chartNdviSeries">
+          </po-chart>
+        </po-container>
+        }
+      </div>
 
-      <po-container class="po-lg-12">
-        <po-helper class="po-pb-1 po-pl-2" style="justify-content: left;" [p-helper]="helperDesmatamento">
-        </po-helper>
-        <po-chart p-title="Desmatamento Anual" [p-categories]="chartDesmatamentoCategories"
-          [p-series]="chartDesmatamentoSeries" [p-options]="chartDesmatamentoOptions">
-        </po-chart>
-      </po-container>
+      <div #climaEl style="position: relative; width: 100%;">
+        @if(!climaInView || climaLoading) {
+        <po-container [p-height]="500">
+          <po-loading-overlay></po-loading-overlay>
+        </po-container>
+        } @else {
+        <po-container class="po-lg-12" [p-height]="500">
+          <po-helper class="po-pb-1 po-pl-2" style="justify-content: left;" [p-helper]="helperClima">
+          </po-helper>
+          <po-chart p-title="Clima – Temperatura e Precipitação" [p-categories]="chartClimaCategories"
+            [p-series]="chartClimaSeries" [p-options]="chartClimaOptions">
+          </po-chart>
+        </po-container>
+        }
+      </div>
+
+      <div #desmaEl style="position: relative; width: 100%;">
+        @if(!desmaInView || desmaLoading) {
+        <po-container [p-height]="500">
+          <po-loading-overlay></po-loading-overlay>
+        </po-container>
+        } @else {
+        <po-container class="po-lg-12" [p-height]="500">
+          <po-helper class="po-pb-1 po-pl-2" style="justify-content: left;" [p-helper]="helperDesmatamento">
+          </po-helper>
+          <po-chart p-title="Desmatamento Anual" [p-categories]="chartDesmatamentoCategories"
+            [p-series]="chartDesmatamentoSeries" [p-options]="chartDesmatamentoOptions">
+          </po-chart>
+        </po-container>
+        }
+      </div>
     </div>
   </div>
 </po-page-default>

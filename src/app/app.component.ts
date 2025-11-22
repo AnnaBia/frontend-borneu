@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { PoChartOptions, PoChartSerie, PoChartType, PoHeaderActionTool, PoHelperOptions, PoThemeA11yEnum, poThemeDefault, PoThemeService, PoThemeTypeEnum } from '@po-ui/ng-components';
 import { AppService } from './app.service';
 
@@ -7,7 +7,11 @@ import { AppService } from './app.service';
   templateUrl: './app.component.html',
   standalone: false
 })
-export class AppComponent {
+export class AppComponent implements AfterViewInit {
+
+  @ViewChild('ndviEl') ndviEl!: ElementRef;
+  @ViewChild('climaEl') climaEl!: ElementRef;
+  @ViewChild('desmaEl') desmaEl!: ElementRef;
 
   chartClimaCategories: string[] = [];
   chartClimaOptions: PoChartOptions = {
@@ -54,15 +58,57 @@ export class AppComponent {
   periodoSelecionado: 'real' | 'previsto' = 'real';
   temaDark: boolean = true;
 
-  constructor(private tema: PoThemeService, private appService: AppService) {
+  ndviInView = false;
+  climaInView = false;
+  desmaInView = false;
+
+  ndviLoading = false;
+  climaLoading = false;
+  desmaLoading = false;
+
+  ndviLoaded = false;
+  climaLoaded = false;
+  desmaLoaded = false;
+
+  private intersectionObserver?: IntersectionObserver;
+
+  constructor(private tema: PoThemeService, private appService: AppService, private zone: NgZone, private cdr: ChangeDetectorRef) {
     this.tema.setCurrentThemeA11y(PoThemeA11yEnum.AA);
     this.tema.setA11yDefaultSizeSmall(true);
   }
 
-  ngOnInit(): void {
-    this.carregarNdvi();
-    this.carregarClima();
-    this.carregarDesmatamento();
+  ngAfterViewInit(): void {
+    this.intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const target = entry.target as HTMLElement;
+        const isVisible = entry.isIntersecting && entry.intersectionRatio > 0;
+        this.zone.run(() => {
+          if (this.ndviEl && target === this.ndviEl.nativeElement) {
+            this.ndviInView = isVisible;
+            if (isVisible && !this.ndviLoaded) {
+              this.carregarNdvi(this.periodoSelecionado === 'previsto');
+            }
+          }
+          if (this.climaEl && target === this.climaEl.nativeElement) {
+            this.climaInView = isVisible;
+            if (isVisible && !this.climaLoaded) {
+              this.carregarClima(this.periodoSelecionado === 'previsto');
+            }
+          }
+          if (this.desmaEl && target === this.desmaEl.nativeElement) {
+            this.desmaInView = isVisible;
+            if (isVisible && !this.desmaLoaded) {
+              this.carregarDesmatamento(this.periodoSelecionado === 'previsto');
+            }
+          }
+          this.cdr.detectChanges();
+        });
+      });
+    }, { threshold: [0.1] });
+
+    if (this.ndviEl) { this.intersectionObserver.observe(this.ndviEl.nativeElement); }
+    if (this.climaEl) { this.intersectionObserver.observe(this.climaEl.nativeElement); }
+    if (this.desmaEl) { this.intersectionObserver.observe(this.desmaEl.nativeElement); }
   }
 
   get headerActions(): Array<PoHeaderActionTool> {
@@ -82,6 +128,9 @@ export class AppComponent {
   }
 
   carregarClima(incluirPrevisao: boolean = false): void {
+    this.climaLoading = true;
+    this.climaLoaded = false;
+
     const serviceCall = incluirPrevisao
       ? this.appService.getPrevisaoClima()
       : this.appService.getClima();
@@ -152,8 +201,14 @@ export class AppComponent {
             }
           ];
         }
+
+        this.climaLoaded = true;
+        this.climaLoading = false;
       },
-      error: err => console.error('Erro ao carregar dados do clima:', err)
+      error: err => {
+        console.error('Erro ao carregar dados do clima:', err);
+        this.climaLoading = false;
+      }
     });
   }
 
@@ -161,6 +216,8 @@ export class AppComponent {
     const serviceCall = incluirPrevisao
       ? this.appService.getPrevisaoDesmatamento()
       : this.appService.getDesmatamento();
+    this.desmaLoading = true;
+    this.desmaLoaded = false;
 
     serviceCall.subscribe({
       next: (dados: any) => {
@@ -199,8 +256,14 @@ export class AppComponent {
             type: PoChartType.Column
           }));
         }
+
+        this.desmaLoaded = true;
+        this.desmaLoading = false;
       },
-      error: err => console.error('Erro ao carregar desmatamento:', err)
+      error: err => {
+        console.error('Erro ao carregar desmatamento:', err);
+        this.desmaLoading = false;
+      }
     });
   }
 
@@ -208,6 +271,8 @@ export class AppComponent {
     const serviceCall = incluirPrevisao
       ? this.appService.getPrevisaoNdvi()
       : this.appService.getNdvi();
+    this.ndviLoading = true;
+    this.ndviLoaded = false;
 
     serviceCall.subscribe({
       next: (dados: any) => {
@@ -248,14 +313,26 @@ export class AppComponent {
             }
           ];
         }
+
+        this.ndviLoaded = true;
+        this.ndviLoading = false;
       },
-      error: err => console.error('Erro ao carregar NDVI:', err)
+      error: err => {
+        console.error('Erro ao carregar NDVI:', err);
+        this.ndviLoading = false;
+      }
     });
   }
 
   onTogglePeriodo(value: 'real' | 'previsto') {
-    this.carregarClima(value === 'previsto');
-    this.carregarDesmatamento(value === 'previsto');
-    this.carregarNdvi(value === 'previsto');
+    this.periodoSelecionado = value;
+
+    this.ndviLoaded = false;
+    this.climaLoaded = false;
+    this.desmaLoaded = false;
+
+    if (this.ndviInView) { this.carregarNdvi(value === 'previsto'); }
+    if (this.climaInView) { this.carregarClima(value === 'previsto'); }
+    if (this.desmaInView) { this.carregarDesmatamento(value === 'previsto'); }
   }
 }
