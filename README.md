@@ -18,7 +18,7 @@ Projeto frontend desenvolvido como parte da Atividade Prática Supervisionada (A
     ```
 2. Navegue até o diretório do projeto:
     ```bash
-    cd frontend-emergy
+    cd frontend-borneu
     ```
 3. Instale as dependências:
     ```bash
