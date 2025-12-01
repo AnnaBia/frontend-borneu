@@ -14,7 +14,7 @@ Projeto frontend desenvolvido como parte da Atividade Prática Supervisionada (A
 
 1. Clone o repositório:
     ```bash
-    git clone https://github.com/AnnaBia/frontend-emergy.git
+    git clone https://github.com/AnnaBia/frontend-borneu.git
     ```
 2. Navegue até o diretório do projeto:
     ```bash
